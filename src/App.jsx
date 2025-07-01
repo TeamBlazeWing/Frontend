@@ -4,6 +4,8 @@ import Login from './components/Login/Login'
 import Dashboard from './components/Dashboard/Dashboard'
 import FogetPassword from './components/FogetPassword/FogetPassword'
 import Event from './components/Event/Event' 
+import About from './components/About/About'
+import Contact from './components/Contact/Contact'
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/forgetpassword" element={<FogetPassword />} />
         <Route path="/events" element={<Event />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
     </Router>
   )
