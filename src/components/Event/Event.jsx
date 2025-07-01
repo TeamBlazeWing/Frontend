@@ -79,7 +79,7 @@ const initialEvents = [
 ];
 
 const MenuItems = [
-  { id: 1, title: 'Home', path: '/' },
+  { id: 1, title: 'Home', path: '/dashboard' },
   { id: 2, title: 'Events', path: '/events' },
   { id: 3, title: 'Categories', path: '/categories' },
   { id: 4, title: 'About', path: '/about' },
