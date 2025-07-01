@@ -38,7 +38,7 @@ const Login = () => {
   
       if (response.ok) {
         // Assuming the server sends a token or success status
-        alert("Signup successful! Redirecting to dashboard...");
+        alert("Login successful! Redirecting to dashboard...");
         setTimeout(() => navigate("/dashboard"), 1000);
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("loggedInUser", email);
