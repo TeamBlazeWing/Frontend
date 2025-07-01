@@ -2,19 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [passwordStrength, setPasswordStrength] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isUsernameValid, setIsUsernameValid] = useState(false);
+  const [isNameValid, setIsNameValid] = useState(false);
 
   const navigate = useNavigate();
 
-  // Password Strength Checker
   const calculatePasswordStrength = (pwd) => {
     const hasLower = /[a-z]/.test(pwd);
     const hasUpper = /[A-Z]/.test(pwd);
@@ -27,19 +27,22 @@ const Signup = () => {
     if (pwd.length === 0) return null;
   };
 
-  // Real-time Validation
   useEffect(() => {
     const newErrors = {};
 
-    if (username && username.length < 8) {
-      newErrors.username = "Username must be at least 8 characters";
-      setIsUsernameValid(false);
+    if (name && name.length < 8) {
+      newErrors.name = "Name must be at least 8 characters";
+      setIsNameValid(false);
     } else {
-      setIsUsernameValid(true);
+      setIsNameValid(true);
     }
 
     if (phoneNumber && !/^\d{10}$/.test(phoneNumber)) {
       newErrors.phoneNumber = "Phone number must be exactly 10 digits";
+    }
+
+    if (email && !/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = "Invalid email format";
     }
 
     if (password) {
@@ -59,15 +62,15 @@ const Signup = () => {
 
     setErrors(newErrors);
     setPasswordStrength(calculatePasswordStrength(password));
-  }, [username, phoneNumber, password, confirmPassword]);
+  }, [name, phoneNumber, email, password, confirmPassword]);
 
-  // Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = {};
-    if (!username) newErrors.username = "Username is required";
+    if (!name) newErrors.name = "Name is required";
     if (!phoneNumber) newErrors.phoneNumber = "Phone number is required";
+    if (!email) newErrors.email = "Email is required";
     if (!password) newErrors.password = "Password is required";
     if (!confirmPassword)
       newErrors.confirmPassword = "Confirm Password is required";
@@ -77,87 +80,93 @@ const Signup = () => {
       return;
     }
 
-    if (username.length < 8) {
-      setErrors({ username: "Username must be at least 8 characters" });
-      return;
-    }
-
-    if (!/^\d{10}$/.test(phoneNumber)) {
-      setErrors({ phoneNumber: "Phone number must be exactly 10 digits" });
-      return;
-    }
-
-    if (
-      !/[a-z]/.test(password) ||
-      !/[A-Z]/.test(password) ||
-      !/[!@#$%^&*]/.test(password)
-    ) {
-      setErrors({
-        password: "Must include lowercase, uppercase, and special character",
-      });
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setErrors({ confirmPassword: "Passwords must match" });
-      return;
-    }
-
     try {
-      const response = await fetch("http://localhost:3005/user/register", {
+      const response = await fetch("http://localhost:3000/api/users/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, phoneNumber, password }),
-        
+        body: JSON.stringify({
+          name,
+          mobileNumber: phoneNumber,
+          email,
+          password,
+        }),
       });
+
       const data = await response.json();
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message);
+        throw new Error(data.message || "Signup failed");
       }
+
       alert("Signup successful! Redirecting to login...");
-      setTimeout(() => navigate("/"), 2000);
+      setTimeout(() => navigate("/login"), 2000);
     } catch (error) {
       setErrors({ general: error.message || "Signup failed" });
       console.error("Signup failed", error);
     }
   };
 
-  const isFormInvalid = Object.keys(errors).length > 0 || !username || !phoneNumber || !password || !confirmPassword;
+  const isFormInvalid =
+    Object.keys(errors).length > 0 ||
+    !name ||
+    !phoneNumber ||
+    !email ||
+    !password ||
+    !confirmPassword;
 
   return (
     <section className="bg-gray-50 dark:bg-black h-screen flex items-center justify-center">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-lg xl:p-0 dark:bg-black dark:border-gray-700">
+        <div className="w-full bg-white rounded-lg shadow dark:border sm:max-w-lg xl:p-0 dark:bg-black dark:border-gray-700">
           <div className="p-8 space-y-6 md:space-y-8 sm:p-10">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Signup for start your journey
+              Signup to start your journey
             </h1>
             {errors.general && (
               <p className="text-red-500 text-center">{errors.general}</p>
             )}
             <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
-              {/* Username */}
+              {/* Name */}
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Name
+                </label>
                 <input
                   type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Enter username"
+                  placeholder="Enter name"
                 />
-                {errors.username && (
-                  <p className="text-red-500 text-sm">{errors.username}</p>
+                {errors.name && (
+                  <p className="text-red-500 text-sm">{errors.name}</p>
+                )}
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Enter email"
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-sm">{errors.email}</p>
                 )}
               </div>
 
               {/* Phone Number */}
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Phone Number
+                </label>
                 <input
                   type="tel"
                   value={phoneNumber}
@@ -173,7 +182,9 @@ const Signup = () => {
 
               {/* Password */}
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Password
+                </label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -181,7 +192,7 @@ const Signup = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Enter password"
-                    disabled={!isUsernameValid}
+                    disabled={!isNameValid}
                   />
                   <button
                     type="button"
@@ -199,7 +210,9 @@ const Signup = () => {
 
               {/* Confirm Password */}
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm Password</label>
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Confirm Password
+                </label>
                 <div className="relative">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
@@ -207,7 +220,7 @@ const Signup = () => {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Confirm password"
-                    disabled={!isUsernameValid}
+                    disabled={!isNameValid}
                   />
                   <button
                     type="button"
@@ -224,7 +237,13 @@ const Signup = () => {
 
               <button
                 type="submit"
-                className={`w-full text-white ${isFormInvalid ? 'bg-red-600' : 'bg-blue-600 hover:bg-blue-700'} focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:${isFormInvalid ? 'bg-red-600' : 'bg-blue-600 dark:hover:bg-blue-700'} dark:focus:ring-blue-800`}
+                className={`w-full text-white ${
+                  isFormInvalid ? "bg-red-600" : "bg-blue-600 hover:bg-blue-700"
+                } focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:${
+                  isFormInvalid
+                    ? "bg-red-600"
+                    : "bg-blue-600 dark:hover:bg-blue-700"
+                } dark:focus:ring-blue-800`}
                 disabled={isFormInvalid}
               >
                 Sign Up
@@ -232,7 +251,13 @@ const Signup = () => {
             </form>
 
             <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-              Already have an account? <a href="/login" className="font-medium text-blue-600 hover:underline dark:text-blue-500">Login</a>
+              Already have an account?{" "}
+              <a
+                href="/login"
+                className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+              >
+                Login
+              </a>
             </p>
           </div>
         </div>
