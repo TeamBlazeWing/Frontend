@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const [username, setUsername] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
@@ -37,6 +38,10 @@ const Signup = () => {
       setIsUsernameValid(true);
     }
 
+    if (phoneNumber && !/^\d{10}$/.test(phoneNumber)) {
+      newErrors.phoneNumber = "Phone number must be exactly 10 digits";
+    }
+
     if (password) {
       if (
         !/[a-z]/.test(password) ||
@@ -54,7 +59,7 @@ const Signup = () => {
 
     setErrors(newErrors);
     setPasswordStrength(calculatePasswordStrength(password));
-  }, [username, password, confirmPassword]);
+  }, [username, phoneNumber, password, confirmPassword]);
 
   // Handle Form Submission
   const handleSubmit = async (e) => {
@@ -62,6 +67,7 @@ const Signup = () => {
 
     const newErrors = {};
     if (!username) newErrors.username = "Username is required";
+    if (!phoneNumber) newErrors.phoneNumber = "Phone number is required";
     if (!password) newErrors.password = "Password is required";
     if (!confirmPassword)
       newErrors.confirmPassword = "Confirm Password is required";
@@ -73,6 +79,11 @@ const Signup = () => {
 
     if (username.length < 8) {
       setErrors({ username: "Username must be at least 8 characters" });
+      return;
+    }
+
+    if (!/^\d{10}$/.test(phoneNumber)) {
+      setErrors({ phoneNumber: "Phone number must be exactly 10 digits" });
       return;
     }
 
@@ -98,7 +109,7 @@ const Signup = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, phoneNumber, password }),
         
       });
       const data = await response.json();
@@ -115,7 +126,7 @@ const Signup = () => {
     }
   };
 
-  const isFormInvalid = Object.keys(errors).length > 0 || !username || !password || !confirmPassword;
+  const isFormInvalid = Object.keys(errors).length > 0 || !username || !phoneNumber || !password || !confirmPassword;
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 h-screen flex items-center justify-center">
@@ -141,6 +152,22 @@ const Signup = () => {
                 />
                 {errors.username && (
                   <p className="text-red-500 text-sm">{errors.username}</p>
+                )}
+              </div>
+
+              {/* Phone Number */}
+              <div>
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
+                <input
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Enter 10-digit phone number"
+                  maxLength="10"
+                />
+                {errors.phoneNumber && (
+                  <p className="text-red-500 text-sm">{errors.phoneNumber}</p>
                 )}
               </div>
 
