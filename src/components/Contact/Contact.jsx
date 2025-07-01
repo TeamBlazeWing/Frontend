@@ -12,7 +12,7 @@ const sliderImages = [
 const MenuItems = [
   { id: 1, title: 'Home', path: '/dashboard' },
   { id: 2, title: 'Events', path: '/events' },
-  { id: 3, title: 'Categories', path: '/categories' },
+  { id: 3, title: 'BuyTicket', path: '/BuyTicket' },
   { id: 4, title: 'About', path: '/about' },
   { id: 5, title: 'Contact', path: '/contact' }
 ];
