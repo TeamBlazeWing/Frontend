@@ -1,9 +1,3 @@
-// Simple Express.js server for testing SimplyTix API endpoints
-// To use this server:
-// 1. Install dependencies: npm install express cors
-// 2. Run the server: node mock-server.js
-// 3. The server will run on http://localhost:3000
-
 import express from 'express';
 import cors from 'cors';
 const app = express();
