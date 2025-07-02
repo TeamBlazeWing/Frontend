@@ -411,7 +411,15 @@ const EventFormModal = ({ event, onClose, onSave, isLoading }) => {
 
 // Event Details Modal
 const EventModal = ({ event, onClose, onEdit, onDelete, onSubscribe, subscribing, operationLoading }) => {
+  const navigate = useNavigate();
+  
   if (!event) return null;
+
+  const handleBuyTicket = () => {
+    // Store the selected event in localStorage for the buy ticket page
+    localStorage.setItem('selectedEvent', JSON.stringify(event));
+    navigate('/buyticket');
+  };
   
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
@@ -439,7 +447,7 @@ const EventModal = ({ event, onClose, onEdit, onDelete, onSubscribe, subscribing
         <p className="mb-1"><strong>Type:</strong> {event.type}</p>
         <p className="mb-4"><strong>Volunteer:</strong> {event.volunteer}</p>
         
-        <div className="flex gap-2">
+        <div className="flex gap-2 mb-4">
           <button
             onClick={() => onSubscribe(event.id)}
             disabled={subscribing || operationLoading}
@@ -459,6 +467,18 @@ const EventModal = ({ event, onClose, onEdit, onDelete, onSubscribe, subscribing
             )}
           </button>
           
+          <button
+            onClick={handleBuyTicket}
+            disabled={operationLoading}
+            className={`flex-1 font-semibold py-2 px-4 rounded-lg transition bg-purple-600 hover:bg-purple-700 text-white ${
+              operationLoading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            Buy Ticket
+          </button>
+        </div>
+        
+        <div className="flex gap-2">
           <button
             onClick={() => onEdit(event)}
             disabled={operationLoading}

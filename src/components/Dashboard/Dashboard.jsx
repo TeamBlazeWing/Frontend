@@ -335,10 +335,18 @@ const SearchFilter = ({ onFilterChange, filters, events }) => {
 
 // Event Details Modal
 const EventModal = ({ event, onClose, onSubscribe, subscribingEventId }) => {
+  const navigate = useNavigate();
+  
   if (!event) return null;
   
   const isSubscribing = subscribingEventId === event.id;
   const isSubscribed = event.isSubscribed;
+
+  const handleBuyTicket = () => {
+    // Store the selected event in localStorage for the buy ticket page
+    localStorage.setItem('selectedEvent', JSON.stringify(event));
+    navigate('/buyticket');
+  };
   
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
@@ -365,24 +373,36 @@ const EventModal = ({ event, onClose, onSubscribe, subscribingEventId }) => {
         <p className="mb-1"><strong>Type:</strong> {event.type}</p>
         <p className="mb-1"><strong>Volunteer:</strong> {event.volunteer}</p>
         
-        <button
-          onClick={() => onSubscribe(event.id)}
-          disabled={isSubscribing}
-          className={`mt-4 w-full font-semibold py-2 px-4 rounded-lg transition flex items-center justify-center ${
-            isSubscribed 
-              ? 'bg-red-600 hover:bg-red-700 text-white'
-              : 'bg-green-600 hover:bg-green-700 text-white'
-          } ${isSubscribing ? 'opacity-50 cursor-not-allowed' : ''}`}
-        >
-          {isSubscribing ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-              {isSubscribed ? 'Unsubscribing...' : 'Subscribing...'}
-            </>
-          ) : (
-            isSubscribed ? 'Unsubscribe' : 'Subscribe'
-          )}
-        </button>
+        <div className="mt-4 flex gap-3">
+          <button
+            onClick={() => onSubscribe(event.id)}
+            disabled={isSubscribing}
+            className={`flex-1 font-semibold py-2 px-4 rounded-lg transition flex items-center justify-center ${
+              isSubscribed 
+                ? 'bg-red-600 hover:bg-red-700 text-white'
+                : 'bg-green-600 hover:bg-green-700 text-white'
+            } ${isSubscribing ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            {isSubscribing ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                {isSubscribed ? 'Unsubscribing...' : 'Subscribing...'}
+              </>
+            ) : (
+              isSubscribed ? 'Unsubscribe' : 'Subscribe'
+            )}
+          </button>
+          
+          <button
+            onClick={handleBuyTicket}
+            disabled={isSubscribing}
+            className={`flex-1 font-semibold py-2 px-4 rounded-lg transition flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white ${
+              isSubscribing ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            Buy Ticket
+          </button>
+        </div>
       </div>
     </div>
   );
