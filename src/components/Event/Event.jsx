@@ -186,8 +186,376 @@ const ImageSlider = ({ images, interval = 10000 }) => {
   );
 };
 
+// Subscription Plans Modal
+const SubscriptionPlansModal = ({ onClose, onSelectPlan }) => {
+  const plans = [
+    {
+      id: 'basic',
+      name: 'Basic Plan',
+      price: 9.99,
+      duration: 'Monthly',
+      features: [
+        'Create up to 3 events per month',
+        'Basic event analytics',
+        'Email support',
+        'Standard event promotion'
+      ],
+      color: 'bg-blue-600 hover:bg-blue-700',
+      popular: false
+    },
+    {
+      id: 'premium',
+      name: 'Premium Plan',
+      price: 19.99,
+      duration: 'Monthly',
+      features: [
+        'Create up to 10 events per month',
+        'Advanced event analytics',
+        'Priority email support',
+        'Featured event promotion',
+        'Custom event branding'
+      ],
+      color: 'bg-purple-600 hover:bg-purple-700',
+      popular: true
+    },
+    {
+      id: 'enterprise',
+      name: 'Enterprise Plan',
+      price: 49.99,
+      duration: 'Monthly',
+      features: [
+        'Unlimited event creation',
+        'Comprehensive analytics dashboard',
+        '24/7 phone & email support',
+        'Premium event promotion',
+        'Full custom branding',
+        'API access',
+        'Dedicated account manager'
+      ],
+      color: 'bg-yellow-600 hover:bg-yellow-700',
+      popular: false
+    }
+  ];
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+      <div className="bg-black/90 backdrop-blur-lg rounded-lg shadow-lg p-6 w-full max-w-6xl max-h-[90vh] overflow-y-auto text-white border border-gray-600">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-3xl font-bold">Choose Your Subscription Plan</h2>
+          <button
+            onClick={onClose}
+            className="text-red-500 hover:text-red-400 text-3xl"
+          >
+            ×
+          </button>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {plans.map((plan) => (
+            <div
+              key={plan.id}
+              className={`relative bg-gray-800/50 rounded-lg p-6 border-2 transition-all hover:scale-105 ${
+                plan.popular ? 'border-purple-500' : 'border-gray-600'
+              }`}
+            >
+              {plan.popular && (
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-purple-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                    Most Popular
+                  </span>
+                </div>
+              )}
+              
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
+                <div className="text-4xl font-bold mb-1">${plan.price}</div>
+                <div className="text-gray-400">{plan.duration}</div>
+              </div>
+              
+              <ul className="space-y-3 mb-6">
+                {plan.features.map((feature, index) => (
+                  <li key={index} className="flex items-center">
+                    <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-sm">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              
+              <button
+                onClick={() => onSelectPlan(plan)}
+                className={`w-full py-3 px-4 rounded-lg font-semibold transition-colors ${plan.color} text-white`}
+              >
+                Select {plan.name}
+              </button>
+            </div>
+          ))}
+        </div>
+        
+        <div className="mt-8 text-center text-gray-400 text-sm">
+          <p>All plans include secure payment processing and can be cancelled anytime.</p>
+          <p>30-day money-back guarantee on all subscriptions.</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Payment Modal
+const PaymentModal = ({ plan, onClose, onPaymentSuccess }) => {
+  const [paymentData, setPaymentData] = useState({
+    cardNumber: '',
+    expiryDate: '',
+    cvv: '',
+    cardholderName: '',
+    billingAddress: '',
+    city: '',
+    zipCode: '',
+    country: 'US'
+  });
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleInputChange = (field, value) => {
+    setPaymentData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const formatCardNumber = (value) => {
+    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    const matches = v.match(/\d{4,16}/g);
+    const match = matches && matches[0] || '';
+    const parts = [];
+    for (let i = 0, len = match.length; i < len; i += 4) {
+      parts.push(match.substring(i, i + 4));
+    }
+    if (parts.length) {
+      return parts.join(' ');
+    } else {
+      return v;
+    }
+  };
+
+  const formatExpiryDate = (value) => {
+    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    if (v.length >= 2) {
+      return v.substring(0, 2) + '/' + v.substring(2, 4);
+    }
+    return v;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsProcessing(true);
+
+    // Simulate payment processing
+    setTimeout(() => {
+      setIsProcessing(false);
+      onPaymentSuccess(plan);
+    }, 3000);
+  };
+
+  return (
+    <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+      <div className="bg-black/90 backdrop-blur-lg rounded-lg shadow-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto text-white border border-gray-600">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">Payment Details</h2>
+          <button
+            onClick={onClose}
+            disabled={isProcessing}
+            className="text-red-500 hover:text-red-400 text-3xl disabled:opacity-50"
+          >
+            ×
+          </button>
+        </div>
+
+        {/* Plan Summary */}
+        <div className="bg-gray-800/50 rounded-lg p-4 mb-6 border border-gray-600">
+          <h3 className="font-semibold mb-2">{plan.name}</h3>
+          <div className="flex justify-between items-center">
+            <span>Monthly Subscription</span>
+            <span className="text-2xl font-bold">${plan.price}</span>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Card Information */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Card Number</label>
+            <input
+              type="text"
+              required
+              maxLength="19"
+              value={paymentData.cardNumber}
+              onChange={(e) => handleInputChange('cardNumber', formatCardNumber(e.target.value))}
+              disabled={isProcessing}
+              placeholder="1234 5678 9012 3456"
+              className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white disabled:opacity-50"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Expiry Date</label>
+              <input
+                type="text"
+                required
+                maxLength="5"
+                value={paymentData.expiryDate}
+                onChange={(e) => handleInputChange('expiryDate', formatExpiryDate(e.target.value))}
+                disabled={isProcessing}
+                placeholder="MM/YY"
+                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white disabled:opacity-50"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">CVV</label>
+              <input
+                type="text"
+                required
+                maxLength="4"
+                value={paymentData.cvv}
+                onChange={(e) => handleInputChange('cvv', e.target.value.replace(/[^0-9]/g, ''))}
+                disabled={isProcessing}
+                placeholder="123"
+                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white disabled:opacity-50"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">Cardholder Name</label>
+            <input
+              type="text"
+              required
+              value={paymentData.cardholderName}
+              onChange={(e) => handleInputChange('cardholderName', e.target.value)}
+              disabled={isProcessing}
+              placeholder="John Doe"
+              className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white disabled:opacity-50"
+            />
+          </div>
+
+          {/* Billing Address */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Billing Address</label>
+            <input
+              type="text"
+              required
+              value={paymentData.billingAddress}
+              onChange={(e) => handleInputChange('billingAddress', e.target.value)}
+              disabled={isProcessing}
+              placeholder="123 Main Street"
+              className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white disabled:opacity-50"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">City</label>
+              <input
+                type="text"
+                required
+                value={paymentData.city}
+                onChange={(e) => handleInputChange('city', e.target.value)}
+                disabled={isProcessing}
+                placeholder="New York"
+                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white disabled:opacity-50"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">ZIP Code</label>
+              <input
+                type="text"
+                required
+                value={paymentData.zipCode}
+                onChange={(e) => handleInputChange('zipCode', e.target.value)}
+                disabled={isProcessing}
+                placeholder="10001"
+                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white disabled:opacity-50"
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isProcessing}
+            className="w-full py-3 px-4 bg-green-600 hover:bg-green-700 disabled:bg-green-500 text-white rounded-lg font-semibold transition-colors flex items-center justify-center"
+          >
+            {isProcessing ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                Processing Payment...
+              </>
+            ) : (
+              `Pay $${plan.price} Now`
+            )}
+          </button>
+        </form>
+
+        <div className="mt-4 text-center text-gray-400 text-xs">
+          <p>🔒 Your payment information is secure and encrypted</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Subscription Status Component
+const SubscriptionStatus = ({ userSubscription, onUpgrade }) => {
+  if (!userSubscription) {
+    return (
+      <div className="w-full max-w-6xl mx-auto mb-8 p-4 bg-yellow-600/20 border border-yellow-500 rounded-lg">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-yellow-400 font-semibold">No Active Subscription</h3>
+            <p className="text-gray-300 text-sm">Subscribe to a plan to create and manage events</p>
+          </div>
+          <button
+            onClick={onUpgrade}
+            className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-semibold transition-colors"
+          >
+            View Plans
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const expiryDate = new Date(userSubscription.expiryDate);
+  const now = new Date();
+  const daysLeft = Math.ceil((expiryDate - now) / (1000 * 60 * 60 * 24));
+  
+  return (
+    <div className={`w-full max-w-6xl mx-auto mb-8 p-4 rounded-lg border ${
+      daysLeft <= 7 
+        ? 'bg-yellow-600/20 border-yellow-500' 
+        : 'bg-green-600/20 border-green-500'
+    }`}>
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className={`font-semibold ${daysLeft <= 7 ? 'text-yellow-400' : 'text-green-400'}`}>
+            {userSubscription.plan} - Active
+          </h3>
+          <p className="text-gray-300 text-sm">
+            {daysLeft > 0 
+              ? `${daysLeft} days remaining` 
+              : 'Expires today'
+            }
+          </p>
+        </div>
+        <button
+          onClick={onUpgrade}
+          className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors"
+        >
+          Upgrade Plan
+        </button>
+      </div>
+    </div>
+  );
+};
+
 // Event Management Controls
-const EventControls = ({ onCreateEvent, subscribedCount }) => {
+const EventControls = ({ onCreateEvent, subscribedCount, userSubscription }) => {
   return (
     <div className="w-full max-w-6xl mx-auto mb-8 p-4 bg-white/10 dark:bg-black/30 backdrop-blur-lg rounded-lg shadow-md">
       <div className="flex flex-wrap gap-4 items-center justify-between">
@@ -195,6 +563,11 @@ const EventControls = ({ onCreateEvent, subscribedCount }) => {
           <h2 className="text-white text-xl font-semibold">
             My Subscribed Events ({subscribedCount})
           </h2>
+          {userSubscription && (
+            <span className="ml-4 px-3 py-1 bg-purple-600 text-white text-sm rounded-full">
+              {userSubscription.plan} Plan
+            </span>
+          )}
         </div>
         <button
           onClick={onCreateEvent}
@@ -214,7 +587,7 @@ const SearchFilter = () => {
 };
 
 // Create/Edit Event Modal
-const EventFormModal = ({ event, onClose, onSave, isLoading }) => {
+const EventFormModal = ({ event, onClose, onSave, isLoading, userSubscription }) => {
   const [formData, setFormData] = useState({
     title: event?.title || '',
     description: event?.description || '',
@@ -236,11 +609,30 @@ const EventFormModal = ({ event, onClose, onSave, isLoading }) => {
     });
   };
 
+  const getSubscriptionInfo = () => {
+    if (!userSubscription) return null;
+    
+    const limits = {
+      'Basic Plan': 3,
+      'Premium Plan': 10,
+      'Enterprise Plan': 'Unlimited'
+    };
+    
+    return limits[userSubscription.plan] || 'Unknown';
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
       <div className="bg-black/90 backdrop-blur-lg rounded-lg shadow-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto text-white border border-gray-600">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">{event ? 'Edit Event' : 'Create New Event'}</h2>
+          <div>
+            <h2 className="text-2xl font-bold">{event ? 'Edit Event' : 'Create New Event'}</h2>
+            {userSubscription && (
+              <p className="text-sm text-gray-400 mt-1">
+                {userSubscription.plan} - Monthly limit: {getSubscriptionInfo()}
+              </p>
+            )}
+          </div>
           <button
             onClick={onClose}
             disabled={isLoading}
@@ -660,6 +1052,10 @@ const Event = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
   const [operationLoading, setOperationLoading] = useState(false);
+  const [showSubscriptionPlans, setShowSubscriptionPlans] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [userSubscription, setUserSubscription] = useState(null);
   const navigate = useNavigate();
 
   // Fetch events from API
@@ -717,9 +1113,96 @@ const Event = () => {
   };
 
   const handleCreateEvent = () => {
+    // Check if user has a subscription
+    const subscription = localStorage.getItem('userSubscription');
+    if (!subscription) {
+      setShowSubscriptionPlans(true);
+      return;
+    }
+    
+    // Parse subscription and check if it's valid
+    try {
+      const parsedSubscription = JSON.parse(subscription);
+      const now = new Date();
+      const expiryDate = new Date(parsedSubscription.expiryDate);
+      
+      if (now > expiryDate) {
+        alert('Your subscription has expired. Please renew to create events.');
+        setShowSubscriptionPlans(true);
+        return;
+      }
+      
+      setUserSubscription(parsedSubscription);
+      setIsCreating(true);
+      setEditingEvent(null);
+    } catch (error) {
+      console.error('Error parsing subscription:', error);
+      setShowSubscriptionPlans(true);
+    }
+  };
+
+  const handleSelectPlan = (plan) => {
+    setSelectedPlan(plan);
+    setShowSubscriptionPlans(false);
+    setShowPaymentModal(true);
+  };
+
+  const handlePaymentSuccess = (plan) => {
+    // Create subscription object
+    const subscription = {
+      plan: plan.name,
+      planId: plan.id,
+      price: plan.price,
+      startDate: new Date().toISOString(),
+      expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
+      active: true
+    };
+    
+    // Save to localStorage
+    localStorage.setItem('userSubscription', JSON.stringify(subscription));
+    setUserSubscription(subscription);
+    
+    // Close modals and show success
+    setShowPaymentModal(false);
+    setSelectedPlan(null);
+    
+    // Show success message with more details
+    const features = {
+      'Basic Plan': 'up to 3 events per month',
+      'Premium Plan': 'up to 10 events per month', 
+      'Enterprise Plan': 'unlimited events'
+    };
+    
+    alert(`🎉 Payment successful! Welcome to ${plan.name}!\n\nYou can now create ${features[plan.name]} and access all premium features.\n\nYour subscription is active until ${new Date(subscription.expiryDate).toLocaleDateString()}.`);
+    
+    // Now open the create event modal
     setIsCreating(true);
     setEditingEvent(null);
   };
+
+  const handleUpgradeSubscription = () => {
+    setShowSubscriptionPlans(true);
+  };
+  useEffect(() => {
+    const subscription = localStorage.getItem('userSubscription');
+    if (subscription) {
+      try {
+        const parsedSubscription = JSON.parse(subscription);
+        const now = new Date();
+        const expiryDate = new Date(parsedSubscription.expiryDate);
+        
+        if (now <= expiryDate) {
+          setUserSubscription(parsedSubscription);
+        } else {
+          // Remove expired subscription
+          localStorage.removeItem('userSubscription');
+        }
+      } catch (error) {
+        console.error('Error parsing subscription:', error);
+        localStorage.removeItem('userSubscription');
+      }
+    }
+  }, []);
 
   const handleEditEvent = (event) => {
     setEditingEvent(event);
@@ -928,9 +1411,14 @@ const Event = () => {
 
         {!loading && !error && (
           <>
+            <SubscriptionStatus 
+              userSubscription={userSubscription}
+              onUpgrade={handleUpgradeSubscription}
+            />
             <EventControls 
               onCreateEvent={handleCreateEvent}
               subscribedCount={subscribedEvents.length}
+              userSubscription={userSubscription}
             />
             <SearchFilter />
             <EventCards 
@@ -961,6 +1449,27 @@ const Event = () => {
             }}
             onSave={handleSaveEvent}
             isLoading={operationLoading}
+            userSubscription={userSubscription}
+          />
+        )}
+
+        {/* Subscription Plans Modal */}
+        {showSubscriptionPlans && (
+          <SubscriptionPlansModal
+            onClose={() => setShowSubscriptionPlans(false)}
+            onSelectPlan={handleSelectPlan}
+          />
+        )}
+
+        {/* Payment Modal */}
+        {showPaymentModal && selectedPlan && (
+          <PaymentModal
+            plan={selectedPlan}
+            onClose={() => {
+              setShowPaymentModal(false);
+              setSelectedPlan(null);
+            }}
+            onPaymentSuccess={handlePaymentSuccess}
           />
         )}
       </main>
