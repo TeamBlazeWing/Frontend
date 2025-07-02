@@ -2,14 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const validate = () => {
     let tempErrors = {};
-    if (!username) tempErrors.username = "Username is required";
+    if (!email) tempErrors.email = "Email is required";
     if (!password) tempErrors.password = "Password is required";
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
@@ -24,12 +24,12 @@ const Login = () => {
     if (!validate()) return;
   
     try {
-      const response = await fetch('http://localhost:3005/user/login', {
+      const response = await fetch('http://localhost:3000/api/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, password }),
       });
   
       const data = await response.json();
@@ -38,15 +38,16 @@ const Login = () => {
   
       if (response.ok) {
         // Assuming the server sends a token or success status
+        alert("Login successful! Redirecting to dashboard...");
+        setTimeout(() => navigate("/dashboard"), 1000);
         localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("loggedInUser", username);
-        navigate("/dashboard");
+        localStorage.setItem("loggedInUser", email);
       } else {
-        // Handle login failure (e.g., wrong username/password)
-        setErrors({ general: data.message || "Invalid username or password" });
+        // Handle login failure (e.g., wrong email/password)
+        setErrors({ general: data.message || "Invalid email or password" });
       }
     } catch (error) {
-      setErrors({ general: "Invalid username or password" });
+      setErrors({ general: "Invalid eamil or password" });
       console.error("Login error:", error);
     }
   };
@@ -87,16 +88,16 @@ const Login = () => {
             {errors.general && <p className="text-red-500 text-sm">{errors.general}</p>}
             <form className="space-y-4 md:space-y-6" onSubmit={handleLogin}>
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
                 <input
                   type="text"
-                  name="username"
+                  name="email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Enter username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Enter email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
-                {errors.username && <p className="text-red-500 text-sm">{errors.username}</p>}
+                {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
               </div>
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
