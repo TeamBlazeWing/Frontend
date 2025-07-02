@@ -555,14 +555,24 @@ const SubscriptionStatus = ({ userSubscription, onUpgrade }) => {
 };
 
 // Event Management Controls
-const EventControls = ({ onCreateEvent, subscribedCount, userSubscription }) => {
+const EventControls = ({ onCreateEvent, createdEventsCount, subscribedEventsCount, userSubscription }) => {
   return (
     <div className="w-full max-w-6xl mx-auto mb-8 p-4 bg-white/10 dark:bg-black/30 backdrop-blur-lg rounded-lg shadow-md">
       <div className="flex flex-wrap gap-4 items-center justify-between">
         <div className="flex items-center">
-          <h2 className="text-white text-xl font-semibold">
-            My Subscribed Events ({subscribedCount})
-          </h2>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <h2 className="text-white text-xl font-semibold">
+              My Events
+            </h2>
+            <div className="flex gap-4 text-sm">
+              <span className="text-blue-300">
+                Created: {createdEventsCount}
+              </span>
+              <span className="text-green-300">
+                Subscribed: {subscribedEventsCount}
+              </span>
+            </div>
+          </div>
           {userSubscription && (
             <span className="ml-4 px-3 py-1 bg-purple-600 text-white text-sm rounded-full">
               {userSubscription.plan} Plan
@@ -581,13 +591,13 @@ const EventControls = ({ onCreateEvent, subscribedCount, userSubscription }) => 
   );
 };
 
-// Search Filter Component - Remove this since we only show subscribed events
+// Search Filter Component - Remove this since we only show My Events
 const SearchFilter = () => {
-  return null; // No filters needed for subscribed events only
+  return null; // No filters needed for My Events only
 };
 
 // Create/Edit Event Modal
-const EventFormModal = ({ event, onClose, onSave, isLoading, userSubscription }) => {
+const EventFormModal = ({ event, onClose, onSave, isLoading, userSubscription, username }) => {
   const [formData, setFormData] = useState({
     title: event?.title || '',
     description: event?.description || '',
@@ -597,7 +607,7 @@ const EventFormModal = ({ event, onClose, onSave, isLoading, userSubscription })
     price: event?.price || 0,
     district: event?.district || 'Downtown',
     type: event?.type || 'Music',
-    volunteer: event?.volunteer || 'John Doe'
+    volunteer: event?.volunteer || username || 'John Doe'
   });
 
   const handleSubmit = (e) => {
@@ -757,19 +767,19 @@ const EventFormModal = ({ event, onClose, onSave, isLoading, userSubscription })
             
             <div>
               <label className="block text-sm font-medium mb-2">Volunteer</label>
-              <select
+              <input
+                type="text"
                 value={formData.volunteer}
                 onChange={(e) => setFormData({...formData, volunteer: e.target.value})}
-                disabled={isLoading}
+                disabled={!event && isLoading} // Auto-set for new events, editable for existing ones
                 className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white disabled:opacity-50"
-              >
-                <option value="John Doe">John Doe</option>
-                <option value="Jane Smith">Jane Smith</option>
-                <option value="Sarah Wilson">Sarah Wilson</option>
-                <option value="Mike Johnson">Mike Johnson</option>
-                <option value="Alex Brown">Alex Brown</option>
-                <option value="Emily Davis">Emily Davis</option>
-              </select>
+                placeholder="Event volunteer"
+              />
+              {!event && (
+                <p className="text-xs text-gray-400 mt-1">
+                  Your username is automatically set as the volunteer for new events
+                </p>
+              )}
             </div>
           </div>
 
@@ -898,55 +908,73 @@ const EventModal = ({ event, onClose, onEdit, onDelete, onSubscribe, subscribing
   );
 };
 
-const EventCards = ({ events, onEventClick }) => {
+const EventCards = ({ events, onEventClick, username, sectionTitle, emptyMessage }) => {
   if (events.length === 0) {
     return (
-      <div className="flex justify-center items-center py-16">
-        <div className="text-center text-white">
-          <h3 className="text-xl font-semibold mb-2">
-            No Subscribed Events
-          </h3>
-          <p className="text-gray-300">
-            You haven't subscribed to any events yet. Browse and subscribe to events to see them here.
-          </p>
+      <div className="w-full max-w-6xl mx-auto mb-8">
+        <h3 className="text-white text-lg font-semibold mb-4">{sectionTitle}</h3>
+        <div className="flex justify-center items-center py-8">
+          <div className="text-center text-white">
+            <h4 className="text-lg font-medium mb-2">
+              No Events Found
+            </h4>
+            <p className="text-gray-300 text-sm">
+              {emptyMessage}
+            </p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-wrap justify-center gap-4 mb-8">
-      {events.map((event) => (
-        <div
-          key={event.id}
-          className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-md rounded-[16px] shadow-md p-4 w-56 flex flex-col items-start cursor-pointer border border-white/20 dark:border-gray-700 transition hover:scale-105 relative"
-          onClick={() => onEventClick(event)}
-          style={{
-            boxShadow: "5px 5px 20px 0 rgba(255, 255, 255, 0.25)",
-          }}
-        >
-          {event.isSubscribed && (
-            <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-              Subscribed
+    <div className="w-full max-w-6xl mx-auto mb-8">
+      <h3 className="text-white text-lg font-semibold mb-4">{sectionTitle}</h3>
+      <div className="flex flex-wrap justify-center gap-4">
+        {events.map((event) => (
+          <div
+            key={event.id}
+            className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-md rounded-[16px] shadow-md p-4 w-56 flex flex-col items-start cursor-pointer border border-white/20 dark:border-gray-700 transition hover:scale-105 relative"
+            onClick={() => onEventClick(event)}
+            style={{
+              boxShadow: "5px 5px 20px 0 rgba(255, 255, 255, 0.25)",
+            }}
+          >
+            {/* Event status badges */}
+            <div className="absolute top-2 right-2 flex flex-col gap-1">
+              {event.volunteer === username && (
+                <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
+                  ✏️ Created
+                </div>
+              )}
+              {event.isSubscribed && (
+                <div className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                  ✓ Subscribed
+                </div>
+              )}
             </div>
-          )}
-          
-          <img
-            src={event.imageUrl}
-            alt={event.title}
-            className="w-full h-28 object-cover rounded mb-3"
-          />
-          
-          <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-1">
-            {event.title}
-          </h2>
-          
-          <div className="text-xs text-gray-700 dark:text-gray-300 mb-1">
-            <span className="mr-2">Price: ${event.price}</span>
-            <span>Location: {event.location}</span>
+            
+            <img
+              src={event.imageUrl}
+              alt={event.title}
+              className="w-full h-28 object-cover rounded mb-3"
+            />
+            
+            <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-1">
+              {event.title}
+            </h2>
+            
+            <div className="text-xs text-gray-700 dark:text-gray-300 mb-1">
+              <span className="mr-2">Price: ${event.price}</span>
+              <span>Location: {event.location}</span>
+            </div>
+            
+            <div className="text-xs text-gray-700 dark:text-gray-300">
+              <span className="mr-2">Volunteer: {event.volunteer}</span>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
@@ -1379,8 +1407,9 @@ const Event = () => {
     }
   };
 
-  // Only show subscribed events
-  const subscribedEvents = events.filter(event => event.isSubscribed);
+  // Show both events created by user (as volunteer) and events user subscribed to
+  const createdEvents = events.filter(event => event.volunteer === username);
+  const subscribedEvents = events.filter(event => event.isSubscribed && event.volunteer !== username);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black flex flex-col">
@@ -1417,18 +1446,50 @@ const Event = () => {
             />
             <EventControls 
               onCreateEvent={handleCreateEvent}
-              subscribedCount={subscribedEvents.length}
+              createdEventsCount={createdEvents.length}
+              subscribedEventsCount={subscribedEvents.length}
               userSubscription={userSubscription}
             />
             <SearchFilter />
-            <EventCards 
-              events={subscribedEvents} 
-              onEventClick={setSelectedEvent}
-            />
+            
+            {/* Created Events Section */}
+            <div className="w-full max-w-6xl mx-auto mb-8">
+              <div className="flex items-center mb-4">
+                <span className="inline-block bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-2 rounded-l-full font-bold shadow-lg text-lg">
+                  <FaPenToSquare className="inline mr-2" />
+                  Created Events
+                </span>
+                <div className="flex-1 border-t-2 border-purple-400"></div>
+              </div>
+              <EventCards 
+                events={createdEvents} 
+                onEventClick={setSelectedEvent}
+                username={username}
+                sectionTitle=""
+                emptyMessage="You haven't created any events yet. Click 'Create Event' to get started!"
+              />
+            </div>
+
+            {/* Subscribed Events Section */}
+            <div className="w-full max-w-6xl mx-auto mb-8">
+              <div className="flex items-center mb-4">
+                <span className="inline-block bg-gradient-to-r from-green-500 to-blue-500 text-white px-4 py-2 rounded-l-full font-bold shadow-lg text-lg">
+                  <FaEye className="inline mr-2" />
+                  Subscribed Events
+                </span>
+                <div className="flex-1 border-t-2 border-green-400"></div>
+              </div>
+              <EventCards 
+                events={subscribedEvents} 
+                onEventClick={setSelectedEvent}
+                username={username}
+                sectionTitle=""
+                emptyMessage="You haven't subscribed to any events yet. Browse and subscribe to events you're interested in!"
+              />
+            </div>
           </>
         )}
         
-        {/* Event Detail Modal */}
         <EventModal 
           event={selectedEvent} 
           onClose={() => setSelectedEvent(null)}
@@ -1450,6 +1511,7 @@ const Event = () => {
             onSave={handleSaveEvent}
             isLoading={operationLoading}
             userSubscription={userSubscription}
+            username={username}
           />
         )}
 
