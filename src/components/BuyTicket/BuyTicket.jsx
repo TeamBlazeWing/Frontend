@@ -97,7 +97,9 @@ const Navbar = ({ username, onLogout }) => {
             )}
           </div>
 
-          <button className="text-white text-xl hover:text-gray-300">
+          <button className="text-white text-xl hover:text-gray-300"onClick={() => {
+            navigate('/messages');
+            }}>
             <FaMessage />
           </button>
           

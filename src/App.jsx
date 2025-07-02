@@ -7,6 +7,7 @@ import Event from './components/Event/Event'
 import About from './components/About/About'
 import Contact from './components/Contact/Contact'
 import BuyTicket from './components/BuyTicket/BuyTicket'
+import Messages from './components/Messages/Messages'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/buyticket" element={<BuyTicket />} />
+        <Route path="/messages" element={<Messages />} />
       </Routes>
     </Router>
   )
