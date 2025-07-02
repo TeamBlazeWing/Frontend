@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUser, FaUsers, FaCalendarAlt, FaMapMarkerAlt, FaHeart, FaStar, FaAward } from "react-icons/fa";
+import { FaUser, FaUsers, FaCalendar, FaLocationDot, FaHeart, FaStar, FaAward } from "react-icons/fa6";
 import { FaMessage } from "react-icons/fa6";
 import { TiThMenu } from "react-icons/ti";
 
@@ -278,7 +278,7 @@ const HeroSection = () => {
 const PlatformStats = () => {
   const stats = [
     {
-      icon: <FaCalendarAlt className="text-3xl text-blue-400" />,
+      icon: <FaCalendar className="text-3xl text-blue-400" />,
       number: platformStats.totalEvents,
       label: "Active Events",
       description: "Events available across all categories"
@@ -290,7 +290,7 @@ const PlatformStats = () => {
       description: "Community leaders organizing events"
     },
     {
-      icon: <FaMapMarkerAlt className="text-3xl text-red-400" />,
+      icon: <FaLocationDot className="text-3xl text-red-400" />,
       number: platformStats.districts,
       label: "Districts Covered",
       description: "Locations across the city"

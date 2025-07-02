@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUser, FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaPaperPlane } from "react-icons/fa";
+import { FaUser, FaLocationDot, FaPhone, FaEnvelope, FaClock, FaPaperPlane } from "react-icons/fa6";
 import { FaMessage } from "react-icons/fa6";
 import { TiThMenu } from "react-icons/ti";
 
@@ -216,7 +216,7 @@ const HeroSection = () => {
 const ContactInfo = () => {
   const contactMethods = [
     {
-      icon: <FaMapMarkerAlt className="text-3xl text-blue-400" />,
+      icon: <FaLocationDot className="text-3xl text-blue-400" />,
       title: "Visit Our Office",
       details: ["123 Event Street", "City, State 12345", "United States"],
       description: "Come visit us during business hours"
