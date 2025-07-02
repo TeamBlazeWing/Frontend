@@ -9,153 +9,6 @@ const sliderImages = [
   "../public/Slider/slider.jpg"
 ];
 
-// Example events (replace with your own data)
-const events = [
-  {
-    title: "Music Concert",
-    description: "Enjoy a night of amazing live music performances.",
-    date: "2024-06-10T19:00:00Z",
-    location: "City Hall",
-    imageUrl: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80", // concert crowd
-    price: 20,
-    district: "Downtown",
-    type: "Music",
-    volunteer: "John Doe"
-  },
-  {
-    title: "Art Exhibition",
-    description: "Explore the latest in modern art.",
-    date: "2024-07-01T17:00:00Z",
-    location: "Art Gallery",
-    imageUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80", // new art gallery
-    price: 10,
-    district: "Uptown",
-    type: "Art",
-    volunteer: "Jane Smith"
-  },
-  {
-    title: "Tech Conference",
-    description: "Latest technology trends and innovations.",
-    date: "2024-08-15T09:00:00Z",
-    location: "Convention Center",
-    imageUrl: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=400&q=80", // tech conference
-    price: 50,
-    district: "Business District",
-    type: "Technology",
-    volunteer: "Mike Johnson"
-  },
-  {
-    title: "Food Festival",
-    description: "Taste amazing local and international cuisines.",
-    date: "2024-09-10T12:00:00Z",
-    location: "Central Park",
-    imageUrl: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80", // food festival
-    price: 15,
-    district: "Downtown",
-    type: "Food",
-    volunteer: "Sarah Wilson"
-  },
-  {
-    title: "Sports Tournament",
-    description: "Exciting sports competitions and matches.",
-    date: "2024-10-05T14:00:00Z",
-    location: "Sports Complex",
-    imageUrl: "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=400&q=80", // new sports
-    price: 25,
-    district: "Sports District",
-    type: "Sports",
-    volunteer: "Alex Brown"
-  },
-  {
-    title: "Comedy Show",
-    description: "Laugh out loud with amazing comedians.",
-    date: "2024-11-20T20:00:00Z",
-    location: "Comedy Club",
-    imageUrl: "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80", // new comedy
-    price: 30,
-    district: "Entertainment District",
-    type: "Comedy",
-    volunteer: "Emily Davis"
-  },
-  {
-    title: "Book Fair",
-    description: "Discover new books and meet your favorite authors.",
-    date: "2024-07-15T10:00:00Z",
-    location: "Library Plaza",
-    imageUrl: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=400&q=80", // books
-    price: 5,
-    district: "Uptown",
-    type: "Art",
-    volunteer: "Jane Smith"
-  },
-  {
-    title: "Startup Pitch Night",
-    description: "Watch startups pitch their ideas to investors.",
-    date: "2024-08-22T18:00:00Z",
-    location: "Innovation Hub",
-    imageUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=400&q=80", // startup
-    price: 0,
-    district: "Business District",
-    type: "Technology",
-    volunteer: "Mike Johnson"
-  },
-  {
-    title: "Wine & Cheese Evening",
-    description: "Sample exquisite wines and cheeses from around the world.",
-    date: "2024-09-18T19:00:00Z",
-    location: "Grand Ballroom",
-    imageUrl: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80", // new wine and cheese
-    price: 40,
-    district: "Downtown",
-    type: "Food",
-    volunteer: "Sarah Wilson"
-  },
-  {
-    title: "Basketball Finals",
-    description: "Cheer for your favorite team in the finals.",
-    date: "2024-10-12T16:00:00Z",
-    location: "Arena",
-    imageUrl: "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=400&q=80", // basketball
-    price: 35,
-    district: "Sports District",
-    type: "Sports",
-    volunteer: "Alex Brown"
-  },
-  {
-    title: "Stand-up Night",
-    description: "A night of hilarious stand-up comedy.",
-    date: "2024-11-25T21:00:00Z",
-    location: "Laugh House",
-    imageUrl: "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80", // stand-up
-    price: 18,
-    district: "Entertainment District",
-    type: "Comedy",
-    volunteer: "Emily Davis"
-  },
-  {
-    title: "Jazz Evening",
-    description: "Smooth jazz performances by renowned artists.",
-    date: "2024-06-20T20:00:00Z",
-    location: "Jazz Bar",
-    imageUrl: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=400&q=80", // jazz
-    price: 22,
-    district: "Downtown",
-    type: "Music",
-    volunteer: "John Doe"
-  },
-  {
-    title: "Photography Workshop",
-    description: "Learn photography from professionals.",
-    date: "2024-07-28T11:00:00Z",
-    location: "Studio 5",
-    imageUrl: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80", // photography
-    price: 30,
-    district: "Uptown",
-    type: "Art",
-    volunteer: "Jane Smith"
-  }
-];
-
 const MenuItems = [
   { id: 1, title: 'Home', path: '/dashboard' },
   { id: 2, title: 'Events', path: '/events' },
@@ -332,10 +185,11 @@ const ImageSlider = ({ images, interval = 10000 }) => {
 };
 
 // Search Filter Component
-const SearchFilter = ({ onFilterChange, filters }) => {
-  const districts = ["All", "Downtown", "Uptown", "Business District", "Sports District", "Entertainment District"];
-  const types = ["All", "Music", "Art", "Technology", "Food", "Sports", "Comedy"];
-  const volunteers = ["All", "John Doe", "Jane Smith", "Mike Johnson", "Sarah Wilson", "Alex Brown", "Emily Davis"];
+const SearchFilter = ({ onFilterChange, filters, events }) => {
+  // Extract unique values from actual events data
+  const districts = ["All", ...new Set(events.map(event => event.district))];
+  const types = ["All", ...new Set(events.map(event => event.type))];
+  const volunteers = ["All", ...new Set(events.map(event => event.volunteer))];
 
   // Custom styles for react-select
   const customStyles = {
@@ -480,8 +334,12 @@ const SearchFilter = ({ onFilterChange, filters }) => {
 };
 
 // Event Details Modal
-const EventModal = ({ event, onClose }) => {
+const EventModal = ({ event, onClose, onSubscribe, subscribingEventId }) => {
   if (!event) return null;
+  
+  const isSubscribing = subscribingEventId === event.id;
+  const isSubscribed = event.isSubscribed;
+  
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
       {/* Blurred background */}
@@ -503,11 +361,27 @@ const EventModal = ({ event, onClose }) => {
         <p className="mb-1"><strong>Date:</strong> {new Date(event.date).toLocaleString()}</p>
         <p className="mb-1"><strong>Location:</strong> {event.location}</p>
         <p className="mb-1"><strong>Price:</strong> ${event.price}</p>
+        <p className="mb-1"><strong>District:</strong> {event.district}</p>
+        <p className="mb-1"><strong>Type:</strong> {event.type}</p>
+        <p className="mb-1"><strong>Volunteer:</strong> {event.volunteer}</p>
+        
         <button
-          onClick={() => alert("Subscribed!")}
-          className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition"
+          onClick={() => onSubscribe(event.id)}
+          disabled={isSubscribing}
+          className={`mt-4 w-full font-semibold py-2 px-4 rounded-lg transition flex items-center justify-center ${
+            isSubscribed 
+              ? 'bg-red-600 hover:bg-red-700 text-white'
+              : 'bg-green-600 hover:bg-green-700 text-white'
+          } ${isSubscribing ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
-          Subscribe
+          {isSubscribing ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+              {isSubscribed ? 'Unsubscribing...' : 'Subscribing...'}
+            </>
+          ) : (
+            isSubscribed ? 'Unsubscribe' : 'Subscribe'
+          )}
         </button>
       </div>
     </div>
@@ -518,7 +392,7 @@ const EventCards = ({ events, onEventClick }) => (
     {events.map((event, idx) => (
       <div
         key={idx}
-        className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-md rounded-[16px] shadow-md p-4 w-56 flex flex-col items-start cursor-pointer border border-white/20 dark:border-gray-700 transition hover:scale-105"
+        className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-md rounded-[16px] shadow-md p-4 w-56 flex flex-col items-start cursor-pointer border border-white/20 dark:border-gray-700 transition hover:scale-105 relative"
         onClick={() => onEventClick(event)}
         style={{
           boxShadow: "5px 5px 20px 0 rgba(255, 255, 255, 0.25)",
@@ -530,6 +404,13 @@ const EventCards = ({ events, onEventClick }) => (
           e.currentTarget.style.boxShadow = "5px 10px 10px 0 rgba(255, 255, 255, 0.1)";
         }}
       >
+        {/* Subscription status badge */}
+        {event.isSubscribed && (
+          <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full z-10">
+            ✓ Subscribed
+          </div>
+        )}
+        
         <img
           src={event.imageUrl}
           alt={event.title}
@@ -541,6 +422,10 @@ const EventCards = ({ events, onEventClick }) => (
         <div className="text-xs text-gray-700 dark:text-gray-300 mb-1">
           <span className="mr-2">Price: ${event.price}</span>
           <span>Location: {event.location}</span>
+        </div>
+        <div className="text-xs text-gray-700 dark:text-gray-300">
+          <span className="mr-2">Type: {event.type}</span>
+          <span>District: {event.district}</span>
         </div>
       </div>
     ))}
@@ -642,12 +527,55 @@ const Dashboard = () => {
   const [username, setUsername] = useState("");
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [filters, setFilters] = useState({ district: "All", type: "All", volunteer: "All" });
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [subscribingEventId, setSubscribingEventId] = useState(null);
   const navigate = useNavigate();
+
+  // Fetch events from API with fallback to local JSON
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('http://localhost:3000/simplytix/Event');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        setEvents(data);
+        setError(null);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        setError("Failed to load events from API. Falling back to local data.");
+        
+        // Fallback to local JSON file if API fails
+        try {
+          const fallbackResponse = await fetch('/events.json');
+          if (fallbackResponse.ok) {
+            const fallbackData = await fallbackResponse.json();
+            setEvents(fallbackData);
+            setError("Using local data (API unavailable)");
+          }
+        } catch (fallbackError) {
+          console.error("Fallback also failed:", fallbackError);
+          setEvents([]);
+          setError("Failed to load events from both API and local data sources.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem("loggedInUser");
     if (!loggedInUser) {
-      navigate("/dashboard"); // change after implementing the backend
+      navigate("/dashboard");
     } else {
       setUsername(loggedInUser);
     }
@@ -657,11 +585,71 @@ const Dashboard = () => {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("loggedInUser");
     localStorage.removeItem("accessToken");
-    navigate("/login");
+    navigate("/dashboard");
   };
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
+  };
+
+  const handleSubscribe = async (eventId) => {
+    try {
+      setSubscribingEventId(eventId);
+      
+      // Find the current event
+      const currentEvent = events.find(event => event.id === eventId);
+      if (!currentEvent) return;
+      
+      // Make API call to subscribe/unsubscribe
+      const response = await fetch('http://localhost:3000/simplytix/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          eventId: eventId,
+          isSubscribed: !currentEvent.isSubscribed,
+          userId: localStorage.getItem("loggedInUser") || username
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Update local state immediately for better UX
+      setEvents(events.map(event => 
+        event.id === eventId 
+          ? { ...event, isSubscribed: !event.isSubscribed }
+          : event
+      ));
+      
+      // Update selected event if it's currently open
+      if (selectedEvent && selectedEvent.id === eventId) {
+        setSelectedEvent({ ...selectedEvent, isSubscribed: !selectedEvent.isSubscribed });
+      }
+      
+      // Show success message
+      const action = currentEvent.isSubscribed ? 'unsubscribed from' : 'subscribed to';
+      alert(`Successfully ${action} the event!`);
+      
+    } catch (error) {
+      console.error("Error updating subscription:", error);
+      alert(`Failed to update subscription: ${error.message}`);
+      
+      // Fallback: Update local state for demo purposes
+      setEvents(events.map(event => 
+        event.id === eventId 
+          ? { ...event, isSubscribed: !event.isSubscribed }
+          : event
+      ));
+      
+      if (selectedEvent && selectedEvent.id === eventId) {
+        setSelectedEvent({ ...selectedEvent, isSubscribed: !selectedEvent.isSubscribed });
+      }
+    } finally {
+      setSubscribingEventId(null);
+    }
   };
 
   // Filter events based on selected filters
@@ -678,9 +666,41 @@ const Dashboard = () => {
       <Navbar username={username} onLogout={handleLogout} />
       <main className="flex-1">
         <ImageSlider images={sliderImages} interval={10000} />
-        <SearchFilter onFilterChange={handleFilterChange} filters={filters} />
-        <EventCards events={filteredEvents} onEventClick={setSelectedEvent} />
-        <EventModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+        
+        {loading && (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+            <span className="ml-3 text-white text-lg">Loading events...</span>
+          </div>
+        )}
+        
+        {error && (
+          <div className="max-w-6xl mx-auto px-4 mb-8">
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+              <p className="text-red-600 dark:text-red-400">{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="mt-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Retry
+              </button>
+            </div>
+          </div>
+        )}
+        
+        {!loading && !error && (
+          <>
+            <SearchFilter onFilterChange={handleFilterChange} filters={filters} events={events} />
+            <EventCards events={filteredEvents} onEventClick={setSelectedEvent} />
+          </>
+        )}
+        
+        <EventModal 
+          event={selectedEvent} 
+          onClose={() => setSelectedEvent(null)} 
+          onSubscribe={handleSubscribe}
+          subscribingEventId={subscribingEventId}
+        />
       </main>
       <Footer />
     </div>

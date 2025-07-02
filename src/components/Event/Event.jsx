@@ -9,75 +9,6 @@ const sliderImages = [
   "../public/Slider/slider.jpg"
 ];
 
-// Example events (replace with your own data)
-const initialEvents = [
-  {
-    id: 1,
-    title: "Music Concert",
-    description: "Enjoy a night of amazing live music performances.",
-    date: "2024-06-10T19:00:00Z",
-    location: "City Hall",
-    imageUrl: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80",
-    price: 20,
-    district: "Downtown",
-    type: "Music",
-    volunteer: "John Doe",
-    isSubscribed: false
-  },
-  {
-    id: 2,
-    title: "Art Exhibition",
-    description: "Explore the latest in modern art.",
-    date: "2024-07-01T17:00:00Z",
-    location: "Art Gallery",
-    imageUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
-    price: 10,
-    district: "Uptown",
-    type: "Art",
-    volunteer: "Jane Smith",
-    isSubscribed: true
-  },
-  {
-    id: 3,
-    title: "Tech Conference",
-    description: "Latest technology trends and innovations.",
-    date: "2024-08-15T09:00:00Z",
-    location: "Convention Center",
-    imageUrl: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=400&q=80",
-    price: 50,
-    district: "Business District",
-    type: "Technology",
-    volunteer: "Mike Johnson",
-    isSubscribed: false
-  },
-  {
-    id: 4,
-    title: "Food Festival",
-    description: "Taste amazing local and international cuisines.",
-    date: "2024-09-10T12:00:00Z",
-    location: "Central Park",
-    imageUrl: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80",
-    price: 15,
-    district: "Downtown",
-    type: "Food",
-    volunteer: "Sarah Wilson",
-    isSubscribed: true
-  },
-  {
-    id: 5,
-    title: "Sports Tournament",
-    description: "Exciting sports competitions and matches.",
-    date: "2024-10-05T14:00:00Z",
-    location: "Sports Complex",
-    imageUrl: "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=400&q=80",
-    price: 25,
-    district: "Sports District",
-    type: "Sports",
-    volunteer: "Alex Brown",
-    isSubscribed: false
-  }
-];
-
 const MenuItems = [
   { id: 1, title: 'Home', path: '/dashboard' },
   { id: 2, title: 'Events', path: '/events' },
@@ -281,7 +212,7 @@ const SearchFilter = () => {
 };
 
 // Create/Edit Event Modal
-const EventFormModal = ({ event, onClose, onSave }) => {
+const EventFormModal = ({ event, onClose, onSave, isLoading }) => {
   const [formData, setFormData] = useState({
     title: event?.title || '',
     description: event?.description || '',
@@ -297,9 +228,9 @@ const EventFormModal = ({ event, onClose, onSave }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSave({
-      ...event,
       ...formData,
-      id: event?.id || Date.now()
+      price: parseFloat(formData.price),
+      date: new Date(formData.date).toISOString()
     });
   };
 
@@ -310,7 +241,8 @@ const EventFormModal = ({ event, onClose, onSave }) => {
           <h2 className="text-2xl font-bold">{event ? 'Edit Event' : 'Create New Event'}</h2>
           <button
             onClick={onClose}
-            className="text-red-500 hover:text-red-400 text-3xl"
+            disabled={isLoading}
+            className="text-red-500 hover:text-red-400 text-3xl disabled:opacity-50"
           >
             ×
           </button>
@@ -325,7 +257,8 @@ const EventFormModal = ({ event, onClose, onSave }) => {
                 required
                 value={formData.title}
                 onChange={(e) => setFormData({...formData, title: e.target.value})}
-                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white"
+                disabled={isLoading}
+                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white disabled:opacity-50"
               />
             </div>
             
@@ -335,9 +268,11 @@ const EventFormModal = ({ event, onClose, onSave }) => {
                 type="number"
                 required
                 min="0"
+                step="0.01"
                 value={formData.price}
                 onChange={(e) => setFormData({...formData, price: Number(e.target.value)})}
-                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white"
+                disabled={isLoading}
+                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white disabled:opacity-50"
               />
             </div>
           </div>
@@ -349,7 +284,8 @@ const EventFormModal = ({ event, onClose, onSave }) => {
               rows="3"
               value={formData.description}
               onChange={(e) => setFormData({...formData, description: e.target.value})}
-              className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white"
+              disabled={isLoading}
+              className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white disabled:opacity-50"
             />
           </div>
 
@@ -361,7 +297,8 @@ const EventFormModal = ({ event, onClose, onSave }) => {
                 required
                 value={formData.date}
                 onChange={(e) => setFormData({...formData, date: e.target.value})}
-                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white"
+                disabled={isLoading}
+                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white disabled:opacity-50"
               />
             </div>
             
@@ -372,7 +309,8 @@ const EventFormModal = ({ event, onClose, onSave }) => {
                 required
                 value={formData.location}
                 onChange={(e) => setFormData({...formData, location: e.target.value})}
-                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white"
+                disabled={isLoading}
+                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white disabled:opacity-50"
               />
             </div>
           </div>
@@ -384,7 +322,8 @@ const EventFormModal = ({ event, onClose, onSave }) => {
               required
               value={formData.imageUrl}
               onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
-              className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white"
+              disabled={isLoading}
+              className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white disabled:opacity-50"
             />
           </div>
 
@@ -394,7 +333,8 @@ const EventFormModal = ({ event, onClose, onSave }) => {
               <select
                 value={formData.district}
                 onChange={(e) => setFormData({...formData, district: e.target.value})}
-                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white"
+                disabled={isLoading}
+                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white disabled:opacity-50"
               >
                 <option value="Downtown">Downtown</option>
                 <option value="Uptown">Uptown</option>
@@ -409,7 +349,8 @@ const EventFormModal = ({ event, onClose, onSave }) => {
               <select
                 value={formData.type}
                 onChange={(e) => setFormData({...formData, type: e.target.value})}
-                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white"
+                disabled={isLoading}
+                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white disabled:opacity-50"
               >
                 <option value="Music">Music</option>
                 <option value="Art">Art</option>
@@ -425,12 +366,13 @@ const EventFormModal = ({ event, onClose, onSave }) => {
               <select
                 value={formData.volunteer}
                 onChange={(e) => setFormData({...formData, volunteer: e.target.value})}
-                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white"
+                disabled={isLoading}
+                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white disabled:opacity-50"
               >
                 <option value="John Doe">John Doe</option>
                 <option value="Jane Smith">Jane Smith</option>
-                <option value="Mike Johnson">Mike Johnson</option>
                 <option value="Sarah Wilson">Sarah Wilson</option>
+                <option value="Mike Johnson">Mike Johnson</option>
                 <option value="Alex Brown">Alex Brown</option>
                 <option value="Emily Davis">Emily Davis</option>
               </select>
@@ -441,15 +383,24 @@ const EventFormModal = ({ event, onClose, onSave }) => {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold transition-colors"
+              disabled={isLoading}
+              className="flex-1 px-6 py-3 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-500 text-white rounded-lg font-semibold transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors"
+              disabled={isLoading}
+              className="flex-1 px-6 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-500 text-white rounded-lg font-semibold transition-colors flex items-center justify-center"
             >
-              {event ? 'Update Event' : 'Create Event'}
+              {isLoading ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  {event ? 'Updating...' : 'Creating...'}
+                </>
+              ) : (
+                event ? 'Update Event' : 'Create Event'
+              )}
             </button>
           </div>
         </form>
@@ -459,7 +410,7 @@ const EventFormModal = ({ event, onClose, onSave }) => {
 };
 
 // Event Details Modal
-const EventModal = ({ event, onClose, onEdit, onDelete, onSubscribe }) => {
+const EventModal = ({ event, onClose, onEdit, onDelete, onSubscribe, subscribing, operationLoading }) => {
   if (!event) return null;
   
   return (
@@ -467,7 +418,8 @@ const EventModal = ({ event, onClose, onEdit, onDelete, onSubscribe }) => {
       <div className="bg-black/90 backdrop-blur-lg rounded-lg shadow-lg p-6 w-full max-w-md relative text-white border border-gray-600">
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 hover:text-gray-400 text-2xl pr-7 pt-3 text-red-500 text-[40px]"
+          disabled={operationLoading}
+          className="absolute top-2 right-2 hover:text-gray-400 text-2xl pr-7 pt-3 text-red-500 text-[40px] disabled:opacity-50"
         >
           &times;
         </button>
@@ -490,27 +442,41 @@ const EventModal = ({ event, onClose, onEdit, onDelete, onSubscribe }) => {
         <div className="flex gap-2">
           <button
             onClick={() => onSubscribe(event.id)}
+            disabled={subscribing || operationLoading}
             className={`flex-1 font-semibold py-2 px-4 rounded-lg transition ${
               event.isSubscribed 
                 ? 'bg-red-600 hover:bg-red-700 text-white' 
                 : 'bg-green-600 hover:bg-green-700 text-white'
-            }`}
+            } ${(subscribing || operationLoading) ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            {event.isSubscribed ? 'Unsubscribe' : 'Subscribe'}
+            {subscribing ? (
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                {event.isSubscribed ? 'Unsubscribing...' : 'Subscribing...'}
+              </div>
+            ) : (
+              event.isSubscribed ? 'Unsubscribe' : 'Subscribe'
+            )}
           </button>
           
           <button
             onClick={() => onEdit(event)}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
+            disabled={operationLoading}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-500 text-white rounded-lg transition"
           >
             <FaPenToSquare />
           </button>
           
           <button
             onClick={() => onDelete(event.id)}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition"
+            disabled={operationLoading}
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-red-500 text-white rounded-lg transition flex items-center justify-center"
           >
-            <FaTrash />
+            {operationLoading ? (
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+            ) : (
+              <FaTrash />
+            )}
           </button>
         </div>
       </div>
@@ -664,11 +630,53 @@ const Footer = () => {
 
 const Event = () => {
   const [username, setUsername] = useState("");
-  const [events, setEvents] = useState(initialEvents);
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [editingEvent, setEditingEvent] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [subscribing, setSubscribing] = useState(false);
+  const [operationLoading, setOperationLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Fetch events from API
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('http://localhost:3000/simplytix/Event');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        setEvents(data);
+        setError(null);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        setError("Failed to load events from API. Falling back to local data.");
+        
+        // Fallback to local JSON file if API fails
+        try {
+          const fallbackResponse = await fetch('/events.json');
+          if (fallbackResponse.ok) {
+            const fallbackData = await fallbackResponse.json();
+            setEvents(fallbackData);
+            setError("Using local data (API unavailable)");
+          }
+        } catch (fallbackError) {
+          console.error("Fallback also failed:", fallbackError);
+          setEvents([]);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem("loggedInUser");
@@ -697,37 +705,172 @@ const Event = () => {
     setSelectedEvent(null);
   };
 
-  const handleSaveEvent = (eventData) => {
-    if (editingEvent) {
-      // Update existing event
-      setEvents(events.map(event => 
-        event.id === editingEvent.id ? { ...eventData, isSubscribed: editingEvent.isSubscribed } : event
-      ));
-    } else {
-      // Create new event
-      setEvents([...events, { ...eventData, isSubscribed: false }]);
+  const handleSaveEvent = async (eventData) => {
+    try {
+      setOperationLoading(true);
+      const accessToken = localStorage.getItem("accessToken");
+      
+      if (editingEvent) {
+        // Update existing event
+        const response = await fetch(`http://localhost:3000/simplytix/Event/${editingEvent.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(accessToken && { 'Authorization': `Bearer ${accessToken}` })
+          },
+          body: JSON.stringify({
+            ...eventData,
+            id: editingEvent.id,
+            isSubscribed: editingEvent.isSubscribed
+          })
+        });
+
+        if (response.ok) {
+          const updatedEvent = await response.json();
+          setEvents(events.map(event => 
+            event.id === editingEvent.id ? updatedEvent : event
+          ));
+          alert("Event updated successfully!");
+        } else {
+          throw new Error('Failed to update event');
+        }
+      } else {
+        // Create new event
+        const response = await fetch('http://localhost:3000/simplytix/Event', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(accessToken && { 'Authorization': `Bearer ${accessToken}` })
+          },
+          body: JSON.stringify({
+            ...eventData,
+            isSubscribed: false
+          })
+        });
+
+        if (response.ok) {
+          const newEvent = await response.json();
+          setEvents([...events, newEvent]);
+          alert("Event created successfully!");
+        } else {
+          throw new Error('Failed to create event');
+        }
+      }
+      
+      setEditingEvent(null);
+      setIsCreating(false);
+      
+    } catch (error) {
+      console.error("Error saving event:", error);
+      alert(`Failed to ${editingEvent ? 'update' : 'create'} event: ${error.message}`);
+      
+      // Fallback: Update local state for demo purposes
+      if (editingEvent) {
+        setEvents(events.map(event => 
+          event.id === editingEvent.id ? { ...eventData, id: editingEvent.id, isSubscribed: editingEvent.isSubscribed } : event
+        ));
+      } else {
+        setEvents([...events, { ...eventData, id: Date.now(), isSubscribed: false }]);
+      }
+      setEditingEvent(null);
+      setIsCreating(false);
+    } finally {
+      setOperationLoading(false);
     }
-    setEditingEvent(null);
-    setIsCreating(false);
   };
 
-  const handleDeleteEvent = (eventId) => {
-    if (window.confirm('Are you sure you want to delete this event?')) {
+  const handleDeleteEvent = async (eventId) => {
+    if (!window.confirm('Are you sure you want to delete this event?')) {
+      return;
+    }
+
+    try {
+      setOperationLoading(true);
+      const accessToken = localStorage.getItem("accessToken");
+      
+      const response = await fetch(`http://localhost:3000/simplytix/Event/${eventId}`, {
+        method: 'DELETE',
+        headers: {
+          ...(accessToken && { 'Authorization': `Bearer ${accessToken}` })
+        }
+      });
+
+      if (response.ok) {
+        setEvents(events.filter(event => event.id !== eventId));
+        setSelectedEvent(null);
+        alert("Event deleted successfully!");
+      } else {
+        throw new Error('Failed to delete event');
+      }
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      alert(`Failed to delete event: ${error.message}`);
+      
+      // Fallback: Update local state for demo purposes
       setEvents(events.filter(event => event.id !== eventId));
       setSelectedEvent(null);
+    } finally {
+      setOperationLoading(false);
     }
   };
 
-  const handleSubscribe = (eventId) => {
-    setEvents(events.map(event => 
-      event.id === eventId 
-        ? { ...event, isSubscribed: !event.isSubscribed }
-        : event
-    ));
-    
-    // Update selected event if it's currently open
-    if (selectedEvent && selectedEvent.id === eventId) {
-      setSelectedEvent({ ...selectedEvent, isSubscribed: !selectedEvent.isSubscribed });
+  const handleSubscribe = async (eventId) => {
+    try {
+      setSubscribing(true);
+      
+      // Find the current event
+      const currentEvent = events.find(event => event.id === eventId);
+      if (!currentEvent) return;
+      
+      // Make API call to subscribe/unsubscribe
+      const response = await fetch('http://localhost:3000/simplytix/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          eventId: eventId,
+          isSubscribed: !currentEvent.isSubscribed,
+          userId: localStorage.getItem("loggedInUser") || username
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Update local state immediately for better UX
+      setEvents(events.map(event => 
+        event.id === eventId 
+          ? { ...event, isSubscribed: !event.isSubscribed }
+          : event
+      ));
+      
+      // Update selected event if it's currently open
+      if (selectedEvent && selectedEvent.id === eventId) {
+        setSelectedEvent({ ...selectedEvent, isSubscribed: !selectedEvent.isSubscribed });
+      }
+
+      console.log(`${currentEvent.isSubscribed ? 'Unsubscribed from' : 'Subscribed to'} event: ${currentEvent.title}`);
+      
+    } catch (error) {
+      console.error('Error updating subscription:', error);
+      
+      // Show error message but still update local state for demo purposes
+      alert(`Subscription API call failed: ${error.message}\n\nNote: The local state has been updated for demo purposes, but in a real app, this would require a working backend.`);
+      
+      // Update local state anyway for demo purposes
+      setEvents(events.map(event => 
+        event.id === eventId 
+          ? { ...event, isSubscribed: !event.isSubscribed }
+          : event
+      ));
+      
+      if (selectedEvent && selectedEvent.id === eventId) {
+        setSelectedEvent({ ...selectedEvent, isSubscribed: !selectedEvent.isSubscribed });
+      }
+    } finally {
+      setSubscribing(false);
     }
   };
 
@@ -739,15 +882,41 @@ const Event = () => {
       <Navbar username={username} onLogout={handleLogout} />
       <main className="flex-1">
         <ImageSlider images={sliderImages} interval={10000} />
-        <EventControls 
-          onCreateEvent={handleCreateEvent}
-          subscribedCount={subscribedEvents.length}
-        />
-        <SearchFilter />
-        <EventCards 
-          events={subscribedEvents} 
-          onEventClick={setSelectedEvent}
-        />
+        
+        {loading && (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+            <span className="ml-3 text-white text-lg">Loading events...</span>
+          </div>
+        )}
+        
+        {error && (
+          <div className="max-w-6xl mx-auto px-4 mb-8">
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+              <p className="text-red-600 dark:text-red-400">{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="mt-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Retry
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!loading && !error && (
+          <>
+            <EventControls 
+              onCreateEvent={handleCreateEvent}
+              subscribedCount={subscribedEvents.length}
+            />
+            <SearchFilter />
+            <EventCards 
+              events={subscribedEvents} 
+              onEventClick={setSelectedEvent}
+            />
+          </>
+        )}
         
         {/* Event Detail Modal */}
         <EventModal 
@@ -756,6 +925,8 @@ const Event = () => {
           onEdit={handleEditEvent}
           onDelete={handleDeleteEvent}
           onSubscribe={handleSubscribe}
+          subscribing={subscribing}
+          operationLoading={operationLoading}
         />
         
         {/* Create/Edit Event Modal */}
@@ -767,6 +938,7 @@ const Event = () => {
               setEditingEvent(null);
             }}
             onSave={handleSaveEvent}
+            isLoading={operationLoading}
           />
         )}
       </main>
