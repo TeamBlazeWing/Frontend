@@ -7,6 +7,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
+  // Client-side form validation
   const validate = () => {
     let tempErrors = {};
     if (!email) tempErrors.email = "Email is required";
@@ -15,42 +16,55 @@ const Login = () => {
     return Object.keys(tempErrors).length === 0;
   };
 
-  const handlefogetpassword = () => {
+  const handleForgetPassword = () => {
     navigate("/forgetpassword");
   };
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
-  
-    try {
-      const response = await fetch('http://localhost:3000/api/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-  
-      const data = await response.json();
+  e.preventDefault();
+  if (!validate()) return;
 
-      localStorage.setItem("accessToken", JSON.stringify(data.accessToken));
-  
-      if (response.ok) {
-        // Assuming the server sends a token or success status
-        alert("Login successful! Redirecting to dashboard...");
-        setTimeout(() => navigate("/dashboard"), 1000);
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("loggedInUser", email);
-      } else {
-        // Handle login failure (e.g., wrong email/password)
-        setErrors({ general: data.message || "Invalid email or password" });
-      }
-    } catch (error) {
-      setErrors({ general: "Invalid eamil or password" });
-      console.error("Login error:", error);
-    }
-  };
+  setErrors({}); // Clear previous errors
+
+  try {
+    const response = await fetch('http://localhost:3000/api/users/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("Login response status:", response.status);
+      console.log("Login response data:", data);
+
+      localStorage.setItem("accessToken", data.token); // ← Check if this needs to be `data.token`
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("loggedInUser", email);
+
+      console.log("✅ Login successful! Redirecting in 2 seconds...");
+      const token = localStorage.getItem("accessToken");
+      const base64Payload = token.split('.')[1]; // Get the payload
+      const payload = JSON.parse(atob(base64Payload));
+      console.log("Decoded JWT payload:", payload);
+
+      alert("Login successful! Redirecting to dashboard...");
+
+      // ✅ Delay redirect by 2 seconds so you can see the console log
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 2000);
+    } 
+
+  } catch (error) {
+    console.error("Login error (network/server):", error);
+    setErrors({ general: "Something went wrong. Please try again." });
+  }
+};
+
 
   const handleSignupNavigate = () => {
     navigate("/signup");
@@ -112,13 +126,17 @@ const Login = () => {
                 {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
               </div>
               <div className="flex items-center justify-between">
-                <a onClick={handlefogetpassword} className="text-sm font-light text-gray-500 dark:text-gray-400 cursor-pointer">Forgot password?</a>
+                <a onClick={handleForgetPassword} className="text-sm font-light text-gray-500 dark:text-gray-400 cursor-pointer">Forgot password?</a>
               </div>
-              <button type="submit" className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-pointer">
+              <button 
+                type="submit" 
+                className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-pointer"
+              >
                 Sign in
               </button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                Don’t have an account yet? <a onClick={handleSignupNavigate} className="font-medium text-blue-600 hover:underline dark:text-blue-500 cursor-pointer">Sign up</a>
+                Don’t have an account yet? 
+                <a onClick={handleSignupNavigate} className="font-medium text-blue-600 hover:underline dark:text-blue-500 cursor-pointer"> Sign up</a>
               </p>
             </form>
           </div>
